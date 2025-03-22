@@ -1,63 +1,61 @@
-class Store:
-
-        def __init__(self,price : float,name : str,quantity : int):
-            self.name = name
-            self.price = price
-            self.quantity = quantity
-            self.active = True
-
-            if not name:
-                raise ValueError("Name cannot be empty.")
-            if price < 0:
-                 raise ValueError("Price cannot be negative.")
-            if quantity < 0:
-                raise ValueError("Quantity cannot be negative.")
-
-        def get_quantity(self):
-            return self.quantity
-
-        def set_quantity(self,quantity : int):
-            if quantity < 0:
-                raise ValueError("Quantity cannot be negative.")
-            self.quantity = quantity
-            if self.quantity == 0:
-                self.deactivate()
-
-        def is_active(self) -> bool:
-            """Returns True if the product is active, otherwise False."""
-            return self.active
-
-        def activate(self):
-            """Activates the product."""
-            self.active = True
-
-        def deactivate(self):
-            """Deactivates the product."""
-            self.active = False
-
-        def show(self) -> str:
-            """Returns a string representation of the product."""
-            return f"{self.name}, Price: {self.price}, Quantity: {self.quantity}"
-
-        def buy(self, quantity: int) -> float:
-            """
-            Buys a given quantity of the product.
-            Updates the quantity and returns the total price.
-            Raises an exception if there is not enough stock.
-            """
-            if quantity <= 0:
-                raise ValueError("Quantity to buy must be greater than zero.")
-            if quantity > self.quantity:
-                raise ValueError("Not enough stock available.")
-
-            total_price = quantity * self.price
-            self.set_quantity(self.quantity - quantity)
-            return total_price
+import products
+import Store
 
 
+def start(best_buy):
+    while True:
+        print("\nWelcome to Best Buy Store!")
+        print("1. List all products in store")
+        print("2. Show total amount in store")
+        print("3. Make an order")
+        print("4. Quit")
+
+        choice = input("Enter your choice: ")
+
+        if choice == "1":
+            for product in best_buy.get_all_products():
+                product.show()
+
+        elif choice == "2":
+            print(f"Total quantity in store: {best_buy.get_total_quantity()}")
+
+        elif choice == "3":
+            shopping_list = []
+            while True:
+                product_name = input("Enter product name to order (or 'done' to finish): ")
+                if product_name.lower() == "done":
+                    break
+                quantity = int(input("Enter quantity: "))
+
+                found_product = next((p for p in best_buy.get_all_products() if p.name == product_name), None)
+
+                if found_product:
+                    shopping_list.append((found_product, quantity))
+                else:
+                    print("Product not found.")
+
+            total_cost = best_buy.order(shopping_list)
+            print(f"Total cost of your order: ${total_cost}")
+
+        elif choice == "4":
+            print("Thank you for visiting Best Buy Store!")
+            break
+
+        else:
+            print("Invalid choice. Please try again.")
 
 
+def main():
+    # Setup initial stock of inventory
+    product_list = [
+        products.Product("MacBook Air M2", price=1450, quantity=100),
+        products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+        products.Product("Google Pixel 7", price=500, quantity=250)
+    ]
+    best_buy = store.Store(product_list)
+
+    start(best_buy)
 
 
-
-
+if __name__ == "__main__":
+    main()
