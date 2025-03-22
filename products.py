@@ -17,7 +17,7 @@ class Product:
             print(f"Product: {self.name}, Price: ${self.price}, Quantity: {self.quantity}")
 
         def set_quantity(self, new_quantity):
-            self.quantity = new_quantity
+            self.quantity =  new_quantity
 
     def main():
         bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
